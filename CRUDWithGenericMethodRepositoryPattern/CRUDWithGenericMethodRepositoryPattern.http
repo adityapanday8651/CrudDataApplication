@@ -1,0 +1,6 @@
+@CRUDWithGenericMethodRepositoryPattern_HostAddress = http://localhost:5182
+
+GET {{CRUDWithGenericMethodRepositoryPattern_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
