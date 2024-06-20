@@ -1,4 +1,5 @@
-﻿using CrudDataApplication.Interfaces;
+﻿using CrudDataApplication.Dto;
+using CrudDataApplication.Interfaces;
 using CrudDataApplication.Models;
 
 namespace CrudDataApplication.Services
@@ -10,29 +11,29 @@ namespace CrudDataApplication.Services
         {
             _productRepository = productRepository;
         }
-        public async Task AddProductAsync(Product product)
+        public async Task<ResponseModelDto> AddProductAsync(ProductDto productDto)
         {
-            await _productRepository.AddProductAsync(product);
+            return await _productRepository.AddProductAsync(productDto);
         }
 
-        public async Task DeleteProductAsync(int id)
+        public async Task<ResponseModelDto> DeleteProductAsync(int id)
         {
-          await _productRepository.DeleteProductAsync(id);
+            return await _productRepository.DeleteProductAsync(id);
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync()
+        public async Task<ResponseModelDto> GetAllProductsAsync()
         {
-           return await _productRepository.GetAllProductsAsync();
+            return await _productRepository.GetAllProductsAsync();
         }
 
-        public async Task<Product> GetProductByIdAsync(int id)
+        public async Task<ResponseModelDto> GetProductByIdAsync(int id)
         {
             return await _productRepository.GetProductByIdAsync(id);
         }
 
-        public async Task UpdateProductAsync(Product product)
+        public async Task<ResponseModelDto> UpdateProductAsync(ProductDto productDto)
         {
-           await _productRepository.UpdateProductAsync(product);
+            return await _productRepository.UpdateProductAsync(productDto);
         }
     }
 }
