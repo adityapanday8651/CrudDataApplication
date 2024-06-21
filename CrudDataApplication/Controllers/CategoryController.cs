@@ -1,5 +1,6 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDataApplication.Controllers
@@ -18,11 +19,12 @@ namespace CrudDataApplication.Controllers
         }
 
         [HttpGet("GetAllCategoriesAsync")]
+        [Authorize]
         public async Task<ActionResult<ResponseModelDto>> GetAllCategoriesAsync()
         {
             try
             {
-               
+
                 var categories = await _categoryService.GetAllCategoriesAsync();
                 return Ok(categories);
             }
@@ -90,8 +92,7 @@ namespace CrudDataApplication.Controllers
         {
             try
             {
-                await _categoryService.DeleteCategoryAsync(id);
-                return NoContent();
+                return await _categoryService.DeleteCategoryAsync(id);
             }
             catch (Exception ex)
             {
