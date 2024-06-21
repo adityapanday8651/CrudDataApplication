@@ -1,13 +1,14 @@
-﻿using CrudDataApplication.Models;
+﻿using CrudDataApplication.Dto;
+using CrudDataApplication.Models;
 
 namespace CrudDataApplication.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAllProductsAsync();
-        Task<Product> GetProductByIdAsync(int id);
-        Task AddProductAsync(Product product);
-        Task UpdateProductAsync(Product product);
-        Task DeleteProductAsync(int id);
+        Task<ResponseModelDto> GetAllProductsAsync();
+        Task<ResponseModelDto> GetProductByIdAsync(int id);
+        Task<ResponseModelDto> AddProductAsync(ProductDto productDto);
+        Task<ResponseModelDto> UpdateProductAsync(ProductDto productDto);
+        Task<ResponseModelDto> DeleteProductAsync(int id);
     }
 }

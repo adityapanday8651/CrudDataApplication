@@ -50,7 +50,7 @@ namespace CrudDataApplication.Repositories
                 Id = x.Id,
             }).OrderByDescending(x => x.Id).ToListAsync();
             responseModelDto.Status = true;
-            responseModelDto.Message = "Retrieve all CategoryDto";
+            responseModelDto.Message = "Retrieve all Category";
             responseModelDto.Data = categoryDtos;
             return responseModelDto;
         }
@@ -58,7 +58,7 @@ namespace CrudDataApplication.Repositories
         public async Task<ResponseModelDto> GetCategoryByIdAsync(int id)
         {
             ResponseModelDto responseModelDto = new ResponseModelDto();
-            var categoryDto = await DbSet().Select(x => new CategoryDto
+            var categoryDto = await DbSet().Where(x => x.Id == id).Select(x => new CategoryDto
             {
                 Id = x.Id,
                 Name = x.Name,
@@ -70,13 +70,16 @@ namespace CrudDataApplication.Repositories
             return responseModelDto;
         }
 
-        public async Task<ResponseModelDto> UpdateCategoryAsync(Category Category)
+        public async Task<ResponseModelDto> UpdateCategoryAsync(CategoryDto categoryDtos)
         {
             ResponseModelDto responseModelDto = new ResponseModelDto();
-            await _repository.UpdateAsync(Category);
+            Category category=new Category();
+            category.Name = categoryDtos.Name;
+            category.Id = categoryDtos.Id;
+            await _repository.UpdateAsync(category);
             responseModelDto.Status = true;
             responseModelDto.Message = "Category Updated Successfully";
-            responseModelDto.Data = Category;
+            responseModelDto.Data = category;
             return responseModelDto;
         }
     }

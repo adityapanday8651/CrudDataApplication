@@ -1,7 +1,5 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
-using CrudDataApplication.Models;
-using CrudDataApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDataApplication.Controllers
@@ -11,23 +9,26 @@ namespace CrudDataApplication.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
+        private readonly ILoggerRepository<CategoryController> _loggerRepository;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, ILoggerRepository<CategoryController> loggerRepository)
         {
             _categoryService = categoryService;
+            _loggerRepository = loggerRepository;
         }
 
         [HttpGet("GetAllCategoriesAsync")]
-        [ResponseCache(Duration = 60)]
         public async Task<ActionResult<ResponseModelDto>> GetAllCategoriesAsync()
         {
             try
             {
+               
                 var categories = await _categoryService.GetAllCategoriesAsync();
                 return Ok(categories);
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
@@ -42,11 +43,12 @@ namespace CrudDataApplication.Controllers
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetCategoryByIdAsync")]
         public async Task<ActionResult<ResponseModelDto>> GetCategoryByIdAsync(int id)
         {
             try
@@ -60,6 +62,40 @@ namespace CrudDataApplication.Controllers
             }
             catch (Exception ex)
             {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("UpdateCategoryAsync")]
+        public async Task<ActionResult<ResponseModelDto>> UpdateCategoryAsync(int id, CategoryDto categoryDto)
+        {
+            try
+            {
+                if (id != categoryDto.Id)
+                {
+                    return BadRequest();
+                }
+                return await _categoryService.UpdateCategoryAsync(categoryDto);
+
+            }
+            catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("DeleteCategoryAsync")]
+        public async Task<ActionResult<ResponseModelDto>> DeleteCategoryAsync(int id)
+        {
+            try
+            {
+                await _categoryService.DeleteCategoryAsync(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }

@@ -1,6 +1,5 @@
-﻿using CrudDataApplication.Interfaces;
-using CrudDataApplication.Models;
-using Microsoft.AspNetCore.Http;
+﻿using CrudDataApplication.Dto;
+using CrudDataApplication.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDataApplication.Controllers
@@ -10,15 +9,16 @@ namespace CrudDataApplication.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly ILoggerRepository<ProductsController> _loggerRepository;
 
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, ILoggerRepository<ProductsController> loggerRepository)
         {
             _productService = productService;
+            _loggerRepository = loggerRepository;
         }
 
         [HttpGet("GetAllProductsAsync")]
-        [ResponseCache(Duration = 60)]
-        public async Task<ActionResult<IEnumerable<Product>>> GetAllProductsAsync()
+        public async Task<ActionResult<ResponseModelDto>> GetAllProductsAsync()
         {
             try
             {
@@ -27,12 +27,13 @@ namespace CrudDataApplication.Controllers
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProductByIdAsync(int id)
+        public async Task<ActionResult<ResponseModelDto>> GetProductByIdAsync(int id)
         {
             try
             {
@@ -45,44 +46,47 @@ namespace CrudDataApplication.Controllers
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpPost("AddProductAsync")]
-        public async Task<ActionResult<Product>> AddProductAsync(Product product)
+        public async Task<ActionResult<ResponseModelDto>> AddProductAsync(ProductDto productDto)
         {
             try
             {
-                await _productService.AddProductAsync(product);
-                return CreatedAtAction(nameof(GetProductByIdAsync), new { id = product.Id }, product);
+                return await _productService.AddProductAsync(productDto);
+
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProductAsync(int id, Product product)
+        public async Task<ActionResult<ResponseModelDto>> PutProductAsync(int id, ProductDto productDto)
         {
             try
             {
-                if (id != product.Id)
+                if (id != productDto.Id)
                 {
                     return BadRequest();
                 }
-                await _productService.UpdateProductAsync(product);
+                await _productService.UpdateProductAsync(productDto);
                 return NoContent();
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProductAsync(int id)
+        public async Task<ActionResult<ResponseModelDto>> DeleteProductAsync(int id)
         {
             try
             {
@@ -91,6 +95,7 @@ namespace CrudDataApplication.Controllers
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
