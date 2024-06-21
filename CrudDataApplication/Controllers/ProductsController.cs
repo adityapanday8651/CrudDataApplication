@@ -32,7 +32,7 @@ namespace CrudDataApplication.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetProductByIdAsync")]
         public async Task<ActionResult<ResponseModelDto>> GetProductByIdAsync(int id)
         {
             try
@@ -66,8 +66,8 @@ namespace CrudDataApplication.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ResponseModelDto>> PutProductAsync(int id, ProductDto productDto)
+        [HttpPut("UpdateProductAsync")]
+        public async Task<ActionResult<ResponseModelDto>> UpdateProductAsync(int id, ProductDto productDto)
         {
             try
             {
@@ -75,8 +75,8 @@ namespace CrudDataApplication.Controllers
                 {
                     return BadRequest();
                 }
-                await _productService.UpdateProductAsync(productDto);
-                return NoContent();
+                return await _productService.UpdateProductAsync(productDto);
+
             }
             catch (Exception ex)
             {
@@ -85,13 +85,13 @@ namespace CrudDataApplication.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteProductAsync")]
         public async Task<ActionResult<ResponseModelDto>> DeleteProductAsync(int id)
         {
             try
             {
-                await _productService.DeleteProductAsync(id);
-                return NoContent();
+                return await _productService.DeleteProductAsync(id);
+
             }
             catch (Exception ex)
             {
