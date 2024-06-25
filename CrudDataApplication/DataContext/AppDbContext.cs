@@ -9,6 +9,7 @@ namespace CrudDataApplication.DataContext
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Category { get; set; }
+        public DbSet<Register> Register { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -9,24 +9,50 @@ namespace CrudDataApplication.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IJwtService _jwtService;
+        private readonly IRegisterService _registerService;
         private readonly ILoggerRepository<AuthController> _loggerRepository;
 
-        public AuthController(IJwtService jwtService, ILoggerRepository<AuthController> loggerRepository)
+        public AuthController(IJwtService jwtService, ILoggerRepository<AuthController> loggerRepository, IRegisterService registerService)
         {
             _jwtService = jwtService;
             _loggerRepository = loggerRepository;
+            _registerService = registerService;
+        }
+
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        {
+            try
+            {
+                await _registerService.AddRegisterAsync(model);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModelDto user)
+        public async Task<IActionResult> Login([FromBody] LoginModelDto user)
         {
-            if (user.Username == "admin" && user.Password == "password")
+            try
             {
-                var token = _jwtService.GenerateToken(user.Username);
-                return Ok(new { Token = token });
-            }
+                var registeredUser = await _registerService.FindByNameAsync(user.Username);
 
-            return Unauthorized();
+                if (registeredUser != null && BCrypt.Net.BCrypt.Verify(user.Password, registeredUser.Password))
+                {
+                    var token = _jwtService.GenerateToken(user.Username);
+                    return Ok(new { Token = token });
+                }
+
+                    return Unauthorized();
+            }catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPost("logout")]
         public IActionResult Logout()
