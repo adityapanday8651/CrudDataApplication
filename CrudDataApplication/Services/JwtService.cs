@@ -15,7 +15,7 @@ namespace CrudDataApplication.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(string userName)
+        public string GenerateToken(string? userName)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
