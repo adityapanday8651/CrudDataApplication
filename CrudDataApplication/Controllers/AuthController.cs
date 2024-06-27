@@ -43,7 +43,7 @@ namespace CrudDataApplication.Controllers
 
                 if (registeredUser != null && BCrypt.Net.BCrypt.Verify(user.Password, registeredUser.Password))
                 {
-                    var token = _jwtService.GenerateToken(user.Username);
+                    var token = _jwtService.GenerateToken(user.Username, registeredUser.RoleName);
                     return Ok(new { Token = token });
                 }
 
