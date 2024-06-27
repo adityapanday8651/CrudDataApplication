@@ -18,6 +18,8 @@ namespace CrudDataApplication.Repositories
         }
 
         protected DbSet<Register> DbSet() => _context.Register;
+
+        protected DbSet<Roles> DbRolesSet() => _context.Roles;
         public async Task<ResponseModelDto> AddRegisterAsync(RegisterDto registerDto)
         {
             ResponseModelDto responseModelDto = new ResponseModelDto();
@@ -55,9 +57,11 @@ namespace CrudDataApplication.Repositories
                 Id = x.Id,
                 Username = x.Username,
                 Password = x.Password,
-                Email = x.Email
-            }).FirstOrDefaultAsync();
-            
+                Email = x.Email,
+                RoleId = x.RoleId,
+                RoleName = DbRolesSet().FirstOrDefault(r => r.Id == x.RoleId).RoleName,
+            }).AsNoTracking().FirstOrDefaultAsync();
+
             return registerDto;
         }
     }
