@@ -1,5 +1,6 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
+using CrudDataApplication.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -93,6 +94,28 @@ namespace CrudDataApplication.Controllers
             try
             {
                 return await _categoryService.DeleteCategoryAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("truncate")]
+        public async Task<ActionResult<ResponseModelDto>> TruncateCategories()
+        {
+            try
+            {
+                ResponseModelDto result = await _categoryService.TruncateCategoriesAsync();
+                if (result.Status == true)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(500, result);
+                }
             }
             catch (Exception ex)
             {

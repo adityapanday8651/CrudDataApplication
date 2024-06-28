@@ -10,5 +10,7 @@ namespace CrudDataApplication.Interfaces
         Task<ResponseModelDto> AddCategoryAsync(CategoryDto Category);
         Task<ResponseModelDto> UpdateCategoryAsync(CategoryDto categoryDtos);
         Task<ResponseModelDto> DeleteCategoryAsync(int id);
+        Task<ResponseModelDto> TruncateCategoriesAsync();
+
     }
 }

@@ -32,6 +32,11 @@ namespace CrudDataApplication.Services
             return await _categoryRepository.GetCategoryByIdAsync(id);
         }
 
+        public async Task<ResponseModelDto> TruncateCategoriesAsync()
+        {
+            return await _categoryRepository.TruncateCategoriesAsync();
+        }
+
         public async Task<ResponseModelDto> UpdateCategoryAsync(CategoryDto Category)
         {
             return await _categoryRepository.UpdateCategoryAsync(Category);
