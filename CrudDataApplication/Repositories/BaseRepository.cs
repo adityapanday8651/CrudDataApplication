@@ -48,5 +48,11 @@ namespace CrudDataApplication.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task TruncateAsync()
+        {
+            var tableName = _context.Model.FindEntityType(typeof(T)).GetTableName();
+            await _context.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE {tableName}");
+        }
     }
 }

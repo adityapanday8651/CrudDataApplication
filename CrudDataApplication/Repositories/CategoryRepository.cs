@@ -82,5 +82,22 @@ namespace CrudDataApplication.Repositories
             responseModelDto.Data = category;
             return responseModelDto;
         }
+
+        public async Task<ResponseModelDto> TruncateCategoriesAsync()
+        {
+            ResponseModelDto responseModelDto = new ResponseModelDto();
+            try
+            {
+                await _repository.TruncateAsync();
+                responseModelDto.Status = true;
+                responseModelDto.Message = "All categories truncated successfully";
+            }
+            catch (Exception ex)
+            {
+                responseModelDto.Status = false;
+                responseModelDto.Message = $"Error truncating categories: {ex.Message}";
+            }
+            return responseModelDto;
+        }
     }
 }
