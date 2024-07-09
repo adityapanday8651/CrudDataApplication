@@ -30,7 +30,7 @@ namespace CrudDataApplication.Repositories
                 Name = x.Name,
                 Id = x.Id,
                 CategoryId = x.CategoryId,
-                CategoryName = DbSetCategory().FirstOrDefault(y => y.Id == x.CategoryId).Name,
+                CategoryName = DbSetCategory().AsNoTracking().FirstOrDefault(y => y.Id == x.CategoryId).Name,
                 Price = x.Price
             }).AsNoTracking().OrderByDescending(x => x.Id).ToListAsync();
             responseModelDto.Status = true;
@@ -49,7 +49,7 @@ namespace CrudDataApplication.Repositories
                 CategoryId = x.CategoryId,
                 CategoryName = DbSetCategory().FirstOrDefault(y => y.Id == x.CategoryId).Name,
                 Price = x.Price,
-            }).FirstOrDefaultAsync();
+            }).AsNoTracking().FirstOrDefaultAsync();
 
             responseModelDto.Status = true;
             responseModelDto.Message = $"Retrieve Product With ID : {id}";
