@@ -7,5 +7,6 @@ namespace CrudDataApplication.Interfaces
         Task<ResponseModelDto> GetRegisterByIdAsync(int id);
         Task<ResponseModelDto> AddRegisterAsync(RegisterDto registerDto);
         Task<RegisterDto> FindByNameAsync(string? userName);
+        Task<ResponseModelDto> GetAllRolesAsync();
     }
 }

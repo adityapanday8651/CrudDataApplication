@@ -20,8 +20,8 @@ namespace CrudDataApplication.Controllers
         }
 
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto model)
+        [HttpPost("AddRegisterAsync")]
+        public async Task<IActionResult> AddRegisterAsync([FromBody] RegisterDto model)
         {
             try
             {
@@ -47,8 +47,9 @@ namespace CrudDataApplication.Controllers
                     return Ok(new { Token = token });
                 }
 
-                    return Unauthorized();
-            }catch (Exception ex)
+                return Unauthorized();
+            }
+            catch (Exception ex)
             {
                 _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
@@ -60,6 +61,22 @@ namespace CrudDataApplication.Controllers
             var userName = User.Identity?.Name;
             _loggerRepository.InfoWithObjectMessage($"User {userName} logged out at {DateTime.UtcNow}");
             return Ok(new { message = "Logged out successfully" });
+        }
+
+
+        [HttpGet("GetAllRolesAsync")]
+        public async Task<ActionResult<ResponseModelDto>> GetAllRolesAsync()
+        {
+            try
+            {
+                var lsrRolesData = await _registerService.GetAllRolesAsync();
+                return Ok(lsrRolesData);
+            }
+            catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -21,6 +21,11 @@ namespace CrudDataApplication.Services
             return await _registerRepository.FindByNameAsync(userName);
         }
 
+        public async Task<ResponseModelDto> GetAllRolesAsync()
+        {
+            return await _registerRepository.GetAllRolesAsync();
+        }
+
         public async Task<ResponseModelDto> GetRegisterByIdAsync(int id)
         {
             return await _registerRepository.GetRegisterByIdAsync(id);

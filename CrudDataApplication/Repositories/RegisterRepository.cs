@@ -43,7 +43,7 @@ namespace CrudDataApplication.Repositories
                 Username = x.Username,
                 Password = x.Password,
                 Email = x.Email
-            }).FirstOrDefaultAsync();
+            }).AsNoTracking().FirstOrDefaultAsync();
             responseModelDto.Status = true;
             responseModelDto.Message = $"Retrieve Register With ID : {id}";
             responseModelDto.Data = registerDto;
@@ -63,6 +63,20 @@ namespace CrudDataApplication.Repositories
             }).AsNoTracking().FirstOrDefaultAsync();
 
             return registerDto;
+        }
+
+        public async Task<ResponseModelDto> GetAllRolesAsync()
+        {
+            ResponseModelDto responseModelDto = new ResponseModelDto();
+            List<RoleDto> lstRoles = await DbRolesSet().Select(x => new RoleDto
+            {
+                RoleName = x.RoleName,
+                Id = x.Id,
+            }).AsNoTracking().ToListAsync();
+            responseModelDto.Status = true;
+            responseModelDto.Message = "Retrieve all Roles";
+            responseModelDto.Data = lstRoles;
+            return responseModelDto;
         }
     }
 }
