@@ -2,6 +2,7 @@
 using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
 using CrudDataApplication.Models;
+using CrudDataApplication.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CrudDataApplication.Repositories
@@ -21,79 +22,78 @@ namespace CrudDataApplication.Repositories
 
         public async Task<ResponseModelDto> AddCategoryAsync(CategoryDto Category)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             Category category = new Category();
             category.Name = Category.Name;
             await _repository.AddAsync(category);
-            responseModelDto.Status = true;
-            responseModelDto.Message = "Category Saved Successfully";
-            responseModelDto.Data = category;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, "Category Saved Successfully", category);
         }
 
         public async Task<ResponseModelDto> DeleteCategoryAsync(int id)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             await _repository.DeleteAsync(id);
-            responseModelDto.Status = true;
-            responseModelDto.Message = $" Deleted Category With ID : {id}";
-            responseModelDto.Data = id;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, $"Deleted Category With ID : {id}", id);
         }
 
         public async Task<ResponseModelDto> GetAllCategoriesAsync()
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
-            List<CategoryDto> categoryDtos = await DbSet().Select(x => new CategoryDto
+            const int defaultPageNumber = 1;
+            const int defaultPageSize = 10;
+            int totalCount = await DbSet().CountAsync();
+            int totalPages = (int)Math.Ceiling(totalCount / (double)defaultPageSize);
+            List<CategoryDto> categoryDtos = await DbSet()
+                .OrderByDescending(x => x.Id)
+                .Skip((defaultPageNumber - 1) * defaultPageSize)
+                .Take(defaultPageSize)
+                .Select(x => new CategoryDto
+                {
+                    Name = x.Name,
+                    Id = x.Id,
+                })
+                .AsNoTracking()
+                .ToListAsync();
+            var paginationMetadata = new
             {
-                Name = x.Name,
-                Id = x.Id,
-            }).OrderByDescending(x => x.Id).AsNoTracking().ToListAsync();
-            responseModelDto.Status = true;
-            responseModelDto.Message = "Retrieve all Category";
-            responseModelDto.Data = categoryDtos;
-            return responseModelDto;
+                TotalCount = totalCount,
+                PageSize = defaultPageSize,
+                CurrentPage = defaultPageNumber,
+                TotalPages = totalPages,
+                HasNext = defaultPageNumber < totalPages,
+                HasPrevious = false // Always false for the first page
+            };
+            var paginationWithCategoryData = new
+            {
+                Categories = categoryDtos,
+                Pagination = paginationMetadata
+            };
+            return CommonUtilityHelper.CreateResponseData(true, "Retrieved paginated categories", paginationWithCategoryData);
         }
 
         public async Task<ResponseModelDto> GetCategoryByIdAsync(int id)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             var categoryDto = await DbSet().Where(x => x.Id == id).Select(x => new CategoryDto { Id = x.Id, Name = x.Name }).AsNoTracking().FirstOrDefaultAsync();
-
-            responseModelDto.Status = true;
-            responseModelDto.Message = $"Retrieve Category With ID : {id}";
-            responseModelDto.Data = categoryDto;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, $"Retrieve Category With Name and ID : {id}", categoryDto);
         }
 
         public async Task<ResponseModelDto> UpdateCategoryAsync(CategoryDto categoryDtos)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             Category category = new Category();
             category.Name = categoryDtos.Name;
             category.Id = categoryDtos.Id;
             await _repository.UpdateAsync(category);
-            responseModelDto.Status = true;
-            responseModelDto.Message = "Category Updated Successfully";
-            responseModelDto.Data = category;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, "Category Updated Successfully", category);
         }
 
         public async Task<ResponseModelDto> TruncateCategoriesAsync()
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             try
             {
                 await _repository.TruncateAsync();
-                responseModelDto.Status = true;
-                responseModelDto.Message = "All categories truncated successfully";
+                return CommonUtilityHelper.CreateResponseData(true, "All categories truncated successfully", null);
             }
             catch (Exception ex)
             {
-                responseModelDto.Status = false;
-                responseModelDto.Message = $"Error truncating categories: {ex.Message}";
+                return CommonUtilityHelper.CreateResponseData(false, $"Error truncating categories: {ex.Message}", null);
             }
-            return responseModelDto;
         }
     }
 }

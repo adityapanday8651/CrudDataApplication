@@ -11,6 +11,7 @@ namespace CrudDataApplication.DataContext
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Register> Register { get; set; }
+        public DbSet<Student> Students { get; set; }
         public DbSet<Roles> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
