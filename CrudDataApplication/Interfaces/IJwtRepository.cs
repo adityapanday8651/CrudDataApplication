@@ -2,7 +2,7 @@
 
 namespace CrudDataApplication.Interfaces
 {
-    public interface IJwtService
+    public interface IJwtRepository
     {
         string GenerateToken(string userName, string role);
         Task<RefreshToken> GenerateRefreshTokenAsync(string userName);

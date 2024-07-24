@@ -15,7 +15,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
         builder => builder
-            .WithOrigins("http://localhost:4200") // Add allowed origins here
+            .WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
@@ -31,6 +31,7 @@ builder.Services.AddScoped(typeof(ILoggerRepository<>), typeof(LoggerRepository<
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IRegisterRepository, RegisterRepository>();
+builder.Services.AddScoped<IJwtRepository, JwtRepository>();
 
 //Services
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -65,9 +66,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
-
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
