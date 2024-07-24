@@ -2,6 +2,7 @@
 using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
 using CrudDataApplication.Models;
+using CrudDataApplication.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CrudDataApplication.Repositories
@@ -21,10 +22,11 @@ namespace CrudDataApplication.Repositories
         protected DbSet<Product> DbSet() => _context.Products;
         protected DbSet<Category> DbSetCategory() => _context.Category;
 
+
+
         public async Task<ResponseModelDto> GetAllProductsAsync()
         {
-
-            ResponseModelDto responseModelDto = new ResponseModelDto();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             List<ProductDto> lstProduct = await DbSet().Select(x => new ProductDto
             {
                 Name = x.Name,
@@ -33,15 +35,13 @@ namespace CrudDataApplication.Repositories
                 CategoryName = DbSetCategory().AsNoTracking().FirstOrDefault(y => y.Id == x.CategoryId).Name,
                 Price = x.Price
             }).AsNoTracking().OrderByDescending(x => x.Id).ToListAsync();
-            responseModelDto.Status = true;
-            responseModelDto.Message = "Retrieve all Product";
-            responseModelDto.Data = lstProduct;
-            return responseModelDto;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            return CommonUtilityHelper.CreateResponseData(true, "Retrieve all Product", lstProduct);
         }
 
         public async Task<ResponseModelDto> GetProductByIdAsync(int id)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var productDto = await DbSet().Where(x => x.Id == id).Select(x => new ProductDto
             {
                 Id = x.Id,
@@ -50,50 +50,35 @@ namespace CrudDataApplication.Repositories
                 CategoryName = DbSetCategory().FirstOrDefault(y => y.Id == x.CategoryId).Name,
                 Price = x.Price,
             }).AsNoTracking().FirstOrDefaultAsync();
-
-            responseModelDto.Status = true;
-            responseModelDto.Message = $"Retrieve Product With ID : {id}";
-            responseModelDto.Data = productDto;
-            return responseModelDto;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            return CommonUtilityHelper.CreateResponseData(true, $"Retrieve Product With ID : {id}", productDto);
         }
 
         public async Task<ResponseModelDto> AddProductAsync(ProductDto productDto)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
-            Product product=new Product();
+            Product product = new Product();
             product.Name = productDto.Name;
             product.Price = productDto.Price;
             product.CategoryId = productDto.CategoryId;
             await _repository.AddAsync(product);
-            responseModelDto.Status = true;
-            responseModelDto.Message = "Product Saved Successfully";
-            responseModelDto.Data = product;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, "Product Saved Successfully", product);
         }
 
         public async Task<ResponseModelDto> UpdateProductAsync(ProductDto productDto)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
-            Product product =new Product();
+            Product product = new Product();
             product.Id = productDto.Id;
             product.Name = productDto.Name;
-            product.Price= productDto.Price;
-            product.CategoryId= productDto.CategoryId;
+            product.Price = productDto.Price;
+            product.CategoryId = productDto.CategoryId;
             await _repository.UpdateAsync(product);
-            responseModelDto.Status = true;
-            responseModelDto.Message = "Product Updated Successfully";
-            responseModelDto.Data = product;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, "Product Updated Successfully", product);
         }
 
         public async Task<ResponseModelDto> DeleteProductAsync(int id)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             await _repository.DeleteAsync(id);
-            responseModelDto.Status = true;
-            responseModelDto.Message = $" Deleted Product With ID : {id}";
-            responseModelDto.Data = id;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, $"Deleted Product With ID : {id}", id);
         }
     }
 }

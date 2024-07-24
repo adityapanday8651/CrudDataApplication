@@ -8,5 +8,6 @@
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
         Task TruncateAsync();
+        Task<(IEnumerable<T> Items, int TotalCount, int TotalPages)> GetPagedAsync(int pageNumber, int pageSize);
     }
 }

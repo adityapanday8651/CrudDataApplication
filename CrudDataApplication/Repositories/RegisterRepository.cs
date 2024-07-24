@@ -2,6 +2,7 @@
 using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
 using CrudDataApplication.Models;
+using CrudDataApplication.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CrudDataApplication.Repositories
@@ -22,21 +23,16 @@ namespace CrudDataApplication.Repositories
         protected DbSet<Roles> DbRolesSet() => _context.Roles;
         public async Task<ResponseModelDto> AddRegisterAsync(RegisterDto registerDto)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             Register register = new Register();
             register.Username = registerDto.Username;
             register.Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
             register.Email = registerDto.Email;
             await _baseRepository.AddAsync(register);
-            responseModelDto.Status = true;
-            responseModelDto.Message = "Registration Successfully";
-            responseModelDto.Data = register;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, "Registration Successfully", register);
         }
 
         public async Task<ResponseModelDto> GetRegisterByIdAsync(int id)
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             var registerDto = await DbSet().Where(x => x.Id == id).Select(x => new RegisterDto
             {
                 Id = x.Id,
@@ -44,13 +40,10 @@ namespace CrudDataApplication.Repositories
                 Password = x.Password,
                 Email = x.Email
             }).AsNoTracking().FirstOrDefaultAsync();
-            responseModelDto.Status = true;
-            responseModelDto.Message = $"Retrieve Register With ID : {id}";
-            responseModelDto.Data = registerDto;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, $"Retrieve Register With ID : {id}", registerDto);
         }
 
-        public async Task<RegisterDto> FindByNameAsync(string userName)
+        public async Task<RegisterDto> FindByNameAsync(string? userName)
         {
             var registerDto = await DbSet().Where(x => x.Username == userName).Select(x => new RegisterDto
             {
@@ -67,16 +60,12 @@ namespace CrudDataApplication.Repositories
 
         public async Task<ResponseModelDto> GetAllRolesAsync()
         {
-            ResponseModelDto responseModelDto = new ResponseModelDto();
             List<RoleDto> lstRoles = await DbRolesSet().Select(x => new RoleDto
             {
                 RoleName = x.RoleName,
                 Id = x.Id,
             }).AsNoTracking().ToListAsync();
-            responseModelDto.Status = true;
-            responseModelDto.Message = "Retrieve all Roles";
-            responseModelDto.Data = lstRoles;
-            return responseModelDto;
+            return CommonUtilityHelper.CreateResponseData(true, "Retrieve all Roles", lstRoles);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
+using CrudDataApplication.Models;
 using CrudDataApplication.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +13,16 @@ namespace CrudDataApplication.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly ILoggerRepository<CategoryController> _loggerRepository;
+        private readonly IBaseRepository<Category> _repository;
 
-        public CategoryController(ICategoryService categoryService, ILoggerRepository<CategoryController> loggerRepository)
+        public CategoryController(ICategoryService categoryService, ILoggerRepository<CategoryController> loggerRepository,IBaseRepository<Category> repository)
         {
             _categoryService = categoryService;
             _loggerRepository = loggerRepository;
+            _repository = repository;
         }
 
         [HttpGet("GetAllCategoriesAsync")]
-        [Authorize]
         public async Task<ActionResult<ResponseModelDto>> GetAllCategoriesAsync()
         {
             try
@@ -122,6 +124,23 @@ namespace CrudDataApplication.Controllers
                 _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
+        }
+
+
+        [HttpGet("GetPaged")]
+        public async Task<IActionResult> GetPaged(int pageNumber = 1, int pageSize = 10)
+        {
+            var (items, totalCount, totalPages) = await _repository.GetPagedAsync(pageNumber, pageSize);
+
+            var response = new
+            {
+                Items = items,
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
+
+            return Ok(response);
         }
     }
 }

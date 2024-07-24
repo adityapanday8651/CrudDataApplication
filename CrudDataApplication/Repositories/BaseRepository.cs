@@ -54,5 +54,18 @@ namespace CrudDataApplication.Repositories
             var tableName = _context.Model.FindEntityType(typeof(T)).GetTableName();
             await _context.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE {tableName}");
         }
+
+        public async Task<(IEnumerable<T> Items, int TotalCount, int TotalPages)> GetPagedAsync(int pageNumber, int pageSize)
+        {
+            var totalCount = await _dbSet.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var items = await _dbSet
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount, totalPages);
+        }
     }
 }
