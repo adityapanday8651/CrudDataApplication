@@ -51,7 +51,7 @@ namespace CrudDataApplication.Repositories
 
         public async Task TruncateAsync()
         {
-            var tableName = _context.Model.FindEntityType(typeof(T)).GetTableName();
+            var tableName = _context.Model?.FindEntityType(typeof(T))?.GetTableName();
             await _context.Database.ExecuteSqlRawAsync($"TRUNCATE TABLE {tableName}");
         }
 

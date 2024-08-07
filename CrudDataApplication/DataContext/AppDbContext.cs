@@ -14,6 +14,7 @@ namespace CrudDataApplication.DataContext
         public DbSet<Student> Students { get; set; }
         public DbSet<Roles> Roles { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Medicine> Medicines { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,13 @@ namespace CrudDataApplication.DataContext
                 new Roles { Id = 2, RoleName = "User" },
                 new Roles { Id = 3, RoleName = "ReadOnly" }
             );
+
+
+
+            modelBuilder.Entity<Medicine>()
+               .Property(p => p.Price)
+               .HasColumnType("decimal(18,2)");
+
 
 
             // Define precision and scale for the Price property
@@ -40,31 +48,6 @@ namespace CrudDataApplication.DataContext
                 .HasOne(p => p.Roles)
                 .WithMany(c => c.Register)
                 .HasForeignKey(p => p.RoleId);
-
-
-            // Refresh Tokens
-            modelBuilder.Entity<RefreshToken>()
-           .HasKey(r => r.Id);
-
-            modelBuilder.Entity<RefreshToken>()
-                .Property(r => r.Token)
-                .IsRequired();
-
-            modelBuilder.Entity<RefreshToken>()
-                .Property(r => r.JwtId)
-                .IsRequired();
-
-            modelBuilder.Entity<RefreshToken>()
-                .Property(r => r.CreationDate)
-                .IsRequired();
-
-            modelBuilder.Entity<RefreshToken>()
-                .Property(r => r.ExpiryDate)
-                .IsRequired();
-
-            modelBuilder.Entity<RefreshToken>()
-                .Property(r => r.UserName)
-                .IsRequired();
         }
 
     }

@@ -70,7 +70,15 @@ namespace CrudDataApplication.Repositories
 
         public async Task<ResponseModelDto> GetCategoryByIdAsync(int id)
         {
-            var categoryDto = await DbSet().Where(x => x.Id == id).Select(x => new CategoryDto { Id = x.Id, Name = x.Name }).AsNoTracking().FirstOrDefaultAsync();
+            var categoryDto = await DbSet()
+                .Where(x => x.Id == id)
+                .Select(x => new CategoryDto
+                {
+                    Id = x.Id,
+                    Name = x.Name
+                })
+                .AsNoTracking().
+                FirstOrDefaultAsync();
             return CommonUtilityHelper.CreateResponseData(true, $"Retrieve Category With Name and ID : {id}", categoryDto);
         }
 

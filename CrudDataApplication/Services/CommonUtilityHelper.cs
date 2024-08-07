@@ -14,6 +14,5 @@ namespace CrudDataApplication.Services
                 Data = data
             };
         }
-
     }
 }
