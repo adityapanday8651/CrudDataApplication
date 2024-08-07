@@ -13,29 +13,31 @@ namespace CrudDataApplication.Repositories
     public class JwtRepository : IJwtRepository
     {
         private readonly IConfiguration _configuration;
+        private readonly IBaseRepository<RefreshToken> _repository;
 
         private readonly AppDbContext _context;
-        public JwtRepository(AppDbContext context, IConfiguration configuration)
+        public JwtRepository(AppDbContext context, IConfiguration configuration, IBaseRepository<RefreshToken> repository)
         {
             _context = context;
             _configuration = configuration;
+            _repository = repository;
         }
 
         protected DbSet<RefreshToken> DbSet() => _context.RefreshTokens;
 
         public async Task<RefreshToken> GenerateRefreshTokenAsync(string userName)
         {
-            var refreshToken = new RefreshToken
+            RefreshToken refreshToken = new RefreshToken
             {
                 Token = GenerateRandomToken(),
                 JwtId = Guid.NewGuid().ToString(),
                 CreationDate = DateTime.UtcNow,
-                ExpiryDate = DateTime.UtcNow.AddMonths(6),
+                ExpiryDate = DateTime.UtcNow.AddMinutes(30),
                 UserName = userName,
                 IsUsed = false,
                 IsRevoked = false
             };
-            await DbSet().AddAsync(refreshToken);
+            await _repository.AddAsync(refreshToken);
             return refreshToken;
         }
 
@@ -72,7 +74,7 @@ namespace CrudDataApplication.Repositories
             }
 
             refreshToken.IsUsed = true;
-            DbSet().Update(refreshToken);
+            await _repository.UpdateAsync(refreshToken);
 
             return refreshToken;
         }

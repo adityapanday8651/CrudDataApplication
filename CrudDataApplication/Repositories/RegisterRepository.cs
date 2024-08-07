@@ -27,6 +27,7 @@ namespace CrudDataApplication.Repositories
             register.Username = registerDto.Username;
             register.Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
             register.Email = registerDto.Email;
+            register.RoleId = registerDto.RoleId;
             await _baseRepository.AddAsync(register);
             return CommonUtilityHelper.CreateResponseData(true, "Registration Successfully", register);
         }
