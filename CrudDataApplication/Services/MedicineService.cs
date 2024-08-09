@@ -30,6 +30,11 @@ namespace CrudDataApplication.Services
             return await _medicineRepository.GetMedicineByIdAsync(id);
         }
 
+        public async Task<ResponseModelDto> TruncateMedicineAsync()
+        {
+           return await _medicineRepository.TruncateMedicineAsync();
+        }
+
         public async Task<ResponseModelDto> UpdateMedicineAsync(MedicineDto MedicineDto)
         {
             return await _medicineRepository.UpdateMedicineAsync(MedicineDto);

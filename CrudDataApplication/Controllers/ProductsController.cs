@@ -1,5 +1,6 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
+using CrudDataApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDataApplication.Controllers
@@ -10,11 +11,13 @@ namespace CrudDataApplication.Controllers
     {
         private readonly IProductService _productService;
         private readonly ILoggerRepository<ProductsController> _loggerRepository;
+        private readonly IBaseRepository<Product> _repository;
 
-        public ProductsController(IProductService productService, ILoggerRepository<ProductsController> loggerRepository)
+        public ProductsController(IProductService productService, ILoggerRepository<ProductsController> loggerRepository, IBaseRepository<Product> repository)
         {
             _productService = productService;
             _loggerRepository = loggerRepository;
+            _repository = repository;
         }
 
         [HttpGet("GetAllProductsAsync")]
@@ -98,6 +101,45 @@ namespace CrudDataApplication.Controllers
                 _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpPost("TruncateProductAsync")]
+        public async Task<ActionResult<ResponseModelDto>> TruncateProductAsync()
+        {
+            try
+            {
+                ResponseModelDto result = await _productService.TruncateProductAsync();
+                if (result.Status == true)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return StatusCode(500, result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet("GetProductPagedAsync")]
+        public async Task<IActionResult> GetProductPagedAsync(int pageNumber, int pageSize)
+        {
+            var (items, totalCount, totalPages) = await _repository.GetPagedAsync(pageNumber, pageSize);
+
+            var response = new
+            {
+                Items = items,
+                TotalCount = totalCount,
+                TotalPages = totalPages,
+                CurrentPage = pageNumber
+            };
+
+            return Ok(response);
         }
     }
 }

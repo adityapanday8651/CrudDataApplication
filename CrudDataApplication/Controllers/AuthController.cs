@@ -50,11 +50,9 @@ namespace CrudDataApplication.Controllers
                 if (registeredUser != null && BCrypt.Net.BCrypt.Verify(user.Password, registeredUser.Password))
                 {
                     var jwtToken = _jwtService.GenerateToken(user.Username, registeredUser.RoleName);
-                    var refreshToken = await _jwtService.GenerateRefreshTokenAsync(user.Username);
                     return Ok(new
                     {
-                        Token = jwtToken,
-                        RefreshToken = refreshToken.Token
+                        Token = jwtToken
                     });
                 }
 
@@ -72,27 +70,47 @@ namespace CrudDataApplication.Controllers
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenDto model)
         {
-            var validatedToken = GetPrincipalFromExpiredToken(model.Token);
-            if (validatedToken == null)
+            try
             {
-                return BadRequest("Invalid token.");
+                var validatedToken = GetPrincipalFromExpiredToken(model.Token);
+                if (validatedToken == null)
+                {
+                    return BadRequest("Invalid token.");
+                }
+
+                var userName = validatedToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+                if (string.IsNullOrEmpty(userName))
+                {
+                    return BadRequest("Invalid token: missing username.");
+                }
+
+                var refreshToken = await _jwtService.ValidateRefreshTokenAsync(model.RefreshToken);
+                if (refreshToken == null)
+                {
+                    return BadRequest("Invalid refresh token.");
+                }
+
+                var userRole = validatedToken.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+                if (string.IsNullOrEmpty(userRole))
+                {
+                    return BadRequest("Invalid token: missing role.");
+                }
+
+                var newJwtToken = _jwtService.GenerateToken(userName, userRole);
+                var newRefreshToken = await _jwtService.GenerateRefreshTokenAsync(userName);
+
+                return Ok(new
+                {
+                    Token = newJwtToken,
+                    RefreshToken = newRefreshToken.Token
+                });
             }
-
-            var userName = validatedToken.Claims.First(x => x.Type == ClaimTypes.Name).Value;
-            var refreshToken = await _jwtService.ValidateRefreshTokenAsync(model.RefreshToken);
-            if (refreshToken == null)
+            catch (Exception ex)
             {
-                return BadRequest("Invalid refresh token.");
+                // Log the exception (consider using a logging framework)
+                Console.Error.WriteLine($"An error occurred while refreshing token: {ex.Message}");
+                return StatusCode(500, "Internal server error");
             }
-
-            var newJwtToken = _jwtService.GenerateToken(userName, validatedToken.Claims.First(x => x.Type == ClaimTypes.Role).Value);
-            var newRefreshToken = await _jwtService.GenerateRefreshTokenAsync(userName);
-
-            return Ok(new
-            {
-                Token = newJwtToken,
-                RefreshToken = newRefreshToken.Token
-            });
         }
 
 

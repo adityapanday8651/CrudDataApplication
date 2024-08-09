@@ -80,5 +80,18 @@ namespace CrudDataApplication.Repositories
             await _repository.DeleteAsync(id);
             return CommonUtilityHelper.CreateResponseData(true, $"Deleted Product With ID : {id}", id);
         }
+
+        public async Task<ResponseModelDto> TruncateProductAsync()
+        {
+            try
+            {
+                await _repository.TruncateAsync();
+                return CommonUtilityHelper.CreateResponseData(true, "All Products truncated successfully", null);
+            }
+            catch (Exception ex)
+            {
+                return CommonUtilityHelper.CreateResponseData(false, $"Error truncating Products: {ex.Message}", null);
+            }
+        }
     }
 }

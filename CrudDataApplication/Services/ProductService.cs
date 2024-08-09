@@ -1,6 +1,5 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
-using CrudDataApplication.Models;
 
 namespace CrudDataApplication.Services
 {
@@ -29,6 +28,11 @@ namespace CrudDataApplication.Services
         public async Task<ResponseModelDto> GetProductByIdAsync(int id)
         {
             return await _productRepository.GetProductByIdAsync(id);
+        }
+
+        public async Task<ResponseModelDto> TruncateProductAsync()
+        {
+           return await _productRepository.TruncateProductAsync();
         }
 
         public async Task<ResponseModelDto> UpdateProductAsync(ProductDto productDto)

@@ -1,5 +1,4 @@
 ﻿using CrudDataApplication.Dto;
-using CrudDataApplication.Models;
 
 namespace CrudDataApplication.Interfaces
 {
@@ -10,5 +9,6 @@ namespace CrudDataApplication.Interfaces
         Task<ResponseModelDto> AddProductAsync(ProductDto productDto);
         Task<ResponseModelDto> UpdateProductAsync(ProductDto productDto);
         Task<ResponseModelDto> DeleteProductAsync(int id);
+        Task<ResponseModelDto> TruncateProductAsync();
     }
 }

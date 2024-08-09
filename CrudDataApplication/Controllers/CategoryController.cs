@@ -65,6 +65,7 @@ namespace CrudDataApplication.Controllers
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
@@ -102,8 +103,8 @@ namespace CrudDataApplication.Controllers
             }
         }
 
-        [HttpPost("truncate")]
-        public async Task<ActionResult<ResponseModelDto>> TruncateCategories()
+        [HttpPost("TruncateCategoriesAsync")]
+        public async Task<ActionResult<ResponseModelDto>> TruncateCategoriesAsync()
         {
             try
             {
@@ -125,8 +126,8 @@ namespace CrudDataApplication.Controllers
         }
 
 
-        [HttpGet("GetPaged")]
-        public async Task<IActionResult> GetPaged(int pageNumber = 1, int pageSize = 10)
+        [HttpGet("GetCategoriesPagedAsync")]
+        public async Task<IActionResult> GetCategoriesPagedAsync(int pageNumber = 1, int pageSize = 10)
         {
             var (items, totalCount, totalPages) = await _repository.GetPagedAsync(pageNumber, pageSize);
 

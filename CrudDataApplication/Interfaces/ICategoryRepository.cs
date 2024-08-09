@@ -1,6 +1,4 @@
 ﻿using CrudDataApplication.Dto;
-using CrudDataApplication.Models;
-
 namespace CrudDataApplication.Interfaces
 {
     public interface ICategoryRepository
