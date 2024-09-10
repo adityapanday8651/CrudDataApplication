@@ -1,6 +1,7 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
 using CrudDataApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDataApplication.Controllers
@@ -20,6 +21,7 @@ namespace CrudDataApplication.Controllers
             _repository = repository;
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("GetAllProductsAsync")]
         public async Task<ActionResult<ResponseModelDto>> GetAllProductsAsync()
         {

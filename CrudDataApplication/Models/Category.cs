@@ -6,7 +6,7 @@ namespace CrudDataApplication.Models
     public class Category
     {
         [Key]
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string? Name { get; set; }
 
         [JsonIgnore]
