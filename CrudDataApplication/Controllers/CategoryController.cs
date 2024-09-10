@@ -1,6 +1,7 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
 using CrudDataApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDataApplication.Controllers
@@ -20,6 +21,7 @@ namespace CrudDataApplication.Controllers
             _repository = repository;
         }
 
+        [Authorize(Policy = "RequireAdminRole")]
         [HttpGet("GetAllCategoriesAsync")]
         public async Task<ActionResult<ResponseModelDto>> GetAllCategoriesAsync()
         {
@@ -65,6 +67,7 @@ namespace CrudDataApplication.Controllers
             }
             catch (Exception ex)
             {
+                _loggerRepository.ErrorMessage(ex);
                 return BadRequest(ex.Message);
             }
         }
@@ -102,8 +105,8 @@ namespace CrudDataApplication.Controllers
             }
         }
 
-        [HttpPost("truncate")]
-        public async Task<ActionResult<ResponseModelDto>> TruncateCategories()
+        [HttpPost("TruncateCategoriesAsync")]
+        public async Task<ActionResult<ResponseModelDto>> TruncateCategoriesAsync()
         {
             try
             {
@@ -125,8 +128,8 @@ namespace CrudDataApplication.Controllers
         }
 
 
-        [HttpGet("GetPaged")]
-        public async Task<IActionResult> GetPaged(int pageNumber = 1, int pageSize = 10)
+        [HttpGet("GetCategoriesPagedAsync")]
+        public async Task<IActionResult> GetCategoriesPagedAsync(int pageNumber = 1, int pageSize = 10)
         {
             var (items, totalCount, totalPages) = await _repository.GetPagedAsync(pageNumber, pageSize);
 

@@ -110,5 +110,18 @@ namespace CrudDataApplication.Repositories
             await _repository.UpdateAsync(medicine);
             return CommonUtilityHelper.CreateResponseData(true, "Category Updated Successfully", medicine);
         }
+
+        public async Task<ResponseModelDto> TruncateMedicineAsync()
+        {
+            try
+            {
+                await _repository.TruncateAsync();
+                return CommonUtilityHelper.CreateResponseData(true, "All Medicine truncated successfully", null);
+            }
+            catch (Exception ex)
+            {
+                return CommonUtilityHelper.CreateResponseData(false, $"Error truncating Medicine: {ex.Message}", null);
+            }
+        }
     }
 }
