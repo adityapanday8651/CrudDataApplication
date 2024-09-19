@@ -98,8 +98,14 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+        c.InjectStylesheet("/swagger-ui/SwaggerDark.css"); // Ensure this file exists
+    });
 }
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

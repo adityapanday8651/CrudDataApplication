@@ -1,0 +1,44 @@
+﻿/* Vibrant Background with Contrasting Elements */
+body {
+    background-color: #282c34; /* Dark gray-blue background */
+    color: #ffffff; /* White text */
+}
+
+h1, h2, h3 {
+    color: #61dafb; /* Light blue headings */
+}
+
+.swagger-ui .topbar {
+    background-color: #20232a; /* Darker top bar */
+}
+
+.swagger-ui .opblock-summary {
+    background-color: #3a3f47; /* Slightly lighter for operation blocks */
+    border-color: #61dafb; /* Light blue border */
+}
+
+    .swagger-ui .opblock-summary:hover {
+        background-color: #4b4e54; /* Darker gray on hover */
+    }
+
+.swagger-ui .btn {
+    background-color: #ff4757; /* Vibrant red buttons */
+    color: #ffffff; /* White text on buttons */
+}
+
+    .swagger-ui .btn:hover {
+        background-color: #ff6b81; /* Lighter red on hover */
+    }
+
+.swagger-ui .model-title {
+    color: #f1c40f; /* Bright yellow for model titles */
+}
+
+/* Link Colors */
+.swagger-ui a {
+    color: #61dafb; /* Light blue links */
+}
+
+    .swagger-ui a:hover {
+        color: #f1c40f; /* Yellow on hover */
+    }
