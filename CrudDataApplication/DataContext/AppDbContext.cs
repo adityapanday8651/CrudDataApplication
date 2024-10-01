@@ -25,30 +25,20 @@ namespace CrudDataApplication.DataContext
                 new Roles { Id = 2, RoleName = "User" },
                 new Roles { Id = 3, RoleName = "ReadOnly" }
             );
-
-
-
             modelBuilder.Entity<Medicine>()
                .Property(p => p.Price)
                .HasColumnType("decimal(18,2)");
-
-
-
-            // Define precision and scale for the Price property
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
-                .HasColumnType("decimal(18,2)");  // Define the SQL type for the Price property
-
+                .HasColumnType("decimal(18,2)");
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
-
             modelBuilder.Entity<Register>()
                 .HasOne(p => p.Roles)
                 .WithMany(c => c.Register)
                 .HasForeignKey(p => p.RoleId);
         }
-
     }
 }

@@ -29,7 +29,7 @@ namespace CrudDataApplication.Repositories
             medicine.Manufacturer = MedicineDto.Manufacturer;
             medicine.ExpiryDate = MedicineDto.ExpiryDate;
             medicine.ImageUrl = MedicineDto.ImageUrl;
-            medicine.IsActive = MedicineDto.IsActive;
+            medicine.IsActive = true;
             await _repository.AddAsync(medicine);
             return CommonUtilityHelper.CreateResponseData(true, "Medicine Saved Successfully", medicine);
         }
@@ -44,9 +44,10 @@ namespace CrudDataApplication.Repositories
         {
             const int defaultPageNumber = 1;
             const int defaultPageSize = 10;
-            int totalCount = await DbSet().CountAsync();
+            var lstMedicines = await _repository.GetAllAsync();
+            int totalCount = lstMedicines.Count();
             int totalPages = (int)Math.Ceiling(totalCount / (double)defaultPageSize);
-            List<MedicineDto> medicineDtos = await DbSet()
+            List<MedicineDto> medicineDtos = lstMedicines
                 .OrderByDescending(x => x.Id)
                 .Skip((defaultPageNumber - 1) * defaultPageSize)
                 .Take(defaultPageSize)
@@ -59,9 +60,8 @@ namespace CrudDataApplication.Repositories
                     Manufacturer = x.Manufacturer,
                     ExpiryDate = x.ExpiryDate,
                     ImageUrl = x.ImageUrl,
-                })
-                .AsNoTracking()
-                .ToListAsync();
+                    IsActive = x.IsActive,
+                }).ToList();
             var paginationMetadata = new
             {
                 TotalCount = totalCount,
@@ -81,34 +81,34 @@ namespace CrudDataApplication.Repositories
 
         public async Task<ResponseModelDto> GetMedicineByIdAsync(int id)
         {
-            var medicineDto = await DbSet()
-                .Where(x => x.Id == id)
-                .Select(x => new MedicineDto
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    Category = x.Category,
-                    Price = x.Price,
-                    Manufacturer = x.Manufacturer,
-                    ExpiryDate = x.ExpiryDate,
-                    ImageUrl = x.ImageUrl,
-                })
-                .AsNoTracking().
-                FirstOrDefaultAsync();
-            return CommonUtilityHelper.CreateResponseData(true, $"Retrieve Category With Name and ID : {id}", medicineDto);
+            var medicalById = await _repository.GetByIdAsync(id);
+            var medicineDtoCheck = new MedicineDto()
+            {
+                Id = medicalById.Id,
+                Name = medicalById.Name,
+                Category = medicalById.Category,
+                Price = medicalById.Price,
+                Manufacturer = medicalById.Manufacturer,
+                ExpiryDate = medicalById.ExpiryDate,
+                ImageUrl = medicalById.ImageUrl,
+                IsActive = medicalById.IsActive,
+            };
+            return CommonUtilityHelper.CreateResponseData(true, $"Retrieve Medicines With Name and ID : {id}", medicineDtoCheck);
         }
 
         public async Task<ResponseModelDto> UpdateMedicineAsync(MedicineDto MedicineDto)
         {
             Medicine medicine = new Medicine();
+            medicine.Id = MedicineDto.Id;
             medicine.Name = MedicineDto.Name;
             medicine.Category = MedicineDto.Category;
             medicine.Price = MedicineDto.Price;
             medicine.Manufacturer = MedicineDto.Manufacturer;
             medicine.ExpiryDate = MedicineDto.ExpiryDate;
             medicine.ImageUrl = MedicineDto.ImageUrl;
+            medicine.IsActive = MedicineDto.IsActive;
             await _repository.UpdateAsync(medicine);
-            return CommonUtilityHelper.CreateResponseData(true, "Category Updated Successfully", medicine);
+            return CommonUtilityHelper.CreateResponseData(true, "Medicines Updated Successfully", medicine);
         }
 
         public async Task<ResponseModelDto> TruncateMedicineAsync()
@@ -122,6 +122,21 @@ namespace CrudDataApplication.Repositories
             {
                 return CommonUtilityHelper.CreateResponseData(false, $"Error truncating Medicine: {ex.Message}", null);
             }
+        }
+
+        public async Task<ResponseModelDto> DeleteMedicineAndUpdateAsync(int id)
+        {
+            Medicine medicalById = await _repository.GetByIdAsync(id);
+            medicalById.IsActive = !medicalById.IsActive;
+            await _repository.UpdateAsync(medicalById);
+            return CommonUtilityHelper.CreateResponseData(true, "Medicines Enabled or Disabled Successfully", medicalById);
+        }
+
+        public async Task<ResponseModelDto> GetAllIsActiveMedicinesAsync()
+        {
+            var GetAllMedicines = await _repository.GetAllAsync();
+            var GetAllIsActiveMedicines = GetAllMedicines.Where(x => x.IsActive == true).ToList();
+            return CommonUtilityHelper.CreateResponseData(true, "Get All IsActive Medicines Successfully", GetAllIsActiveMedicines);
         }
     }
 }

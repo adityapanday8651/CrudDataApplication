@@ -15,9 +15,19 @@ namespace CrudDataApplication.Services
             return await _medicineRepository.AddMedicineAsync(MedicineDto);
         }
 
+        public async Task<ResponseModelDto> DeleteMedicineAndUpdateAsync(int id)
+        {
+           return await _medicineRepository.DeleteMedicineAndUpdateAsync(id);
+        }
+
         public async Task<ResponseModelDto> DeleteMedicineAsync(int id)
         {
             return await _medicineRepository.DeleteMedicineAsync(id);
+        }
+
+        public async Task<ResponseModelDto> GetAllIsActiveMedicinesAsync()
+        {
+            return await _medicineRepository.GetAllIsActiveMedicinesAsync();
         }
 
         public async Task<ResponseModelDto> GetAllMedicinesAsync()

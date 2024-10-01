@@ -18,40 +18,33 @@ namespace CrudDataApplication.Repositories
             _repository = repository;
             _context = context;
         }
-
-        protected DbSet<Product> DbSet() => _context.Products;
         protected DbSet<Category> DbSetCategory() => _context.Category;
-
-
-
         public async Task<ResponseModelDto> GetAllProductsAsync()
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            List<ProductDto> lstProduct = await DbSet().Select(x => new ProductDto
+            IEnumerable<Product> lstProducts = await _repository.GetAllAsync();
+            var lstProduct = lstProducts.Select(x => new ProductDto
             {
                 Name = x.Name,
                 Id = x.Id,
                 CategoryId = x.CategoryId,
                 CategoryName = DbSetCategory().AsNoTracking().FirstOrDefault(y => y.Id == x.CategoryId).Name,
                 Price = x.Price
-            }).AsNoTracking().OrderByDescending(x => x.Id).ToListAsync();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            }).OrderByDescending(x => x.Id);
             return CommonUtilityHelper.CreateResponseData(true, "Retrieve all Product", lstProduct);
         }
 
         public async Task<ResponseModelDto> GetProductByIdAsync(int id)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            var productDto = await DbSet().Where(x => x.Id == id).Select(x => new ProductDto
+            var productById = await _repository.GetByIdAsync(id);
+            var productDtoById = new ProductDto()
             {
-                Id = x.Id,
-                Name = x.Name,
-                CategoryId = x.CategoryId,
-                CategoryName = DbSetCategory().FirstOrDefault(y => y.Id == x.CategoryId).Name,
-                Price = x.Price,
-            }).AsNoTracking().FirstOrDefaultAsync();
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            return CommonUtilityHelper.CreateResponseData(true, $"Retrieve Product With ID : {id}", productDto);
+                Id = id,
+                Name = productById.Name,
+                CategoryId = productById.CategoryId,
+                CategoryName = DbSetCategory().AsNoTracking().FirstOrDefault(y => y.Id == productById.CategoryId).Name,
+                Price = productById.Price
+            };
+            return CommonUtilityHelper.CreateResponseData(true, $"Retrieve Product With ID : {id}", productDtoById);
         }
 
         public async Task<ResponseModelDto> AddProductAsync(ProductDto productDto)

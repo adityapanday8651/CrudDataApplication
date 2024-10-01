@@ -1,7 +1,6 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
 using CrudDataApplication.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDataApplication.Controllers
@@ -27,6 +26,22 @@ namespace CrudDataApplication.Controllers
             {
 
                 var lstMedicines = await _medicineService.GetAllMedicinesAsync();
+                return Ok(lstMedicines);
+            }
+            catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("GetAllIsActiveMedicinesAsync")]
+        public async Task<ActionResult<ResponseModelDto>> GetAllIsActiveMedicinesAsync()
+
+        {
+            try
+            {
+
+                var lstMedicines = await _medicineService.GetAllIsActiveMedicinesAsync();
                 return Ok(lstMedicines);
             }
             catch (Exception ex)
@@ -61,6 +76,43 @@ namespace CrudDataApplication.Controllers
                     return NotFound();
                 }
                 return Ok(medicine);
+            }
+            catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("UpdateMedicineAsync")]
+        public async Task<ActionResult<ResponseModelDto>> UpdateMedicineAsync(int id, MedicineDto MedicineDto)
+        {
+            try
+            {
+                if (id != MedicineDto.Id)
+                {
+                    return BadRequest();
+                }
+                return await _medicineService.UpdateMedicineAsync(MedicineDto);
+
+            }
+            catch (Exception ex)
+            {
+                _loggerRepository.ErrorMessage(ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("DeleteMedicineAndUpdateAsync")]
+        public async Task<ActionResult<ResponseModelDto>> DeleteMedicineAndUpdateAsync(int id)
+        {
+            try
+            {
+                if (id == 0)
+                {
+                    return BadRequest();
+                }
+                return await _medicineService.DeleteMedicineAndUpdateAsync(id);
             }
             catch (Exception ex)
             {

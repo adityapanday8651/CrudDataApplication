@@ -10,5 +10,7 @@ namespace CrudDataApplication.Interfaces
         Task<ResponseModelDto> UpdateMedicineAsync(MedicineDto MedicineDto);
         Task<ResponseModelDto> DeleteMedicineAsync(int id);
         Task<ResponseModelDto> TruncateMedicineAsync();
+        Task<ResponseModelDto> DeleteMedicineAndUpdateAsync(int id);
+        Task<ResponseModelDto> GetAllIsActiveMedicinesAsync();
     }
 }
