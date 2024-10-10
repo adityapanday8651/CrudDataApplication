@@ -3,13 +3,15 @@ using System.Text.Json.Serialization;
 
 namespace CrudDataApplication.Models
 {
-    public class Category
+    public class Company
     {
         [Key]
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public string? Name { get; set; }
+        public string? Location { get; set; }
+        public int? DepartmentId { get; set; }
 
         [JsonIgnore]
-        public virtual ICollection<Product>? Products { get; set; }
+        public virtual Departments? Departments { get; set; }
     }
 }

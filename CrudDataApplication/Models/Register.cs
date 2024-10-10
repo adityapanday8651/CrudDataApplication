@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CrudDataApplication.Models
+﻿namespace CrudDataApplication.Models
 {
     public class Register
     {
