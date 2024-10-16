@@ -10,6 +10,7 @@ namespace CrudDataApplication.Models
         public int? ManagerId { get; set; }
         public int? EmployeesId { get; set; }
         public int? ProjectsId { get; set; }
+        public bool? IsActive { get; set; }
 
         [JsonIgnore]
         public virtual Manager? Manager { get; set; }

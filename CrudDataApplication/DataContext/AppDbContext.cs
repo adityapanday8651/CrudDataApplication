@@ -23,6 +23,7 @@ namespace CrudDataApplication.DataContext
         public DbSet<Manager> Managers { get; set; }
         public DbSet<Projects> Projects { get; set; }
         public DbSet<Tasks> Tasks { get; set; }
+        public DbSet<Address> Address { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

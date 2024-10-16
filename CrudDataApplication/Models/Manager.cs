@@ -10,6 +10,7 @@ namespace CrudDataApplication.Models
         public string? ManagerName { get; set; }
         public string? Email { get; set; }
         public string? Phone { get; set; }
+        public bool? IsActive { get; set; }
 
         [JsonIgnore]
         public virtual ICollection<Departments>? Departments { get; set; }

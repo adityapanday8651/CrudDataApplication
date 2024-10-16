@@ -10,6 +10,7 @@ namespace CrudDataApplication.Models
         public string? Name { get; set; }
         public string? Location { get; set; }
         public int? DepartmentId { get; set; }
+        public bool? IsActive { get; set; }
 
         [JsonIgnore]
         public virtual Departments? Departments { get; set; }

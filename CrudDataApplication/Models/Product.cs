@@ -8,6 +8,7 @@ namespace CrudDataApplication.Models
         public int CategoryId {  get; set; }
         public string? Name { get; set; }
         public decimal Price { get; set; }
+        public bool? IsActive { get; set; }
 
         [JsonIgnore]
         public virtual Category Category { get; set; }

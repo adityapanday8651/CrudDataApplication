@@ -1,7 +1,5 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
-using CrudDataApplication.Models;
-
 namespace CrudDataApplication.Services
 {
     public class CategoryService : ICategoryService

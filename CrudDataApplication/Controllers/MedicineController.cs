@@ -1,6 +1,5 @@
 ﻿using CrudDataApplication.Dto;
 using CrudDataApplication.Interfaces;
-using CrudDataApplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrudDataApplication.Controllers

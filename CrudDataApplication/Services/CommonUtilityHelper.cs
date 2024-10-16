@@ -5,6 +5,7 @@ namespace CrudDataApplication.Services
     public class CommonUtilityHelper
     {
         protected CommonUtilityHelper() { }
+
         public static ResponseModelDto CreateResponseData(bool status, string message, object? data)
         {
             return new ResponseModelDto

@@ -11,6 +11,7 @@ namespace CrudDataApplication.Models
         public decimal? Salary { get; set; }
         public string? HireDate { get; set; }
         public int? AddressId { get; set; }
+        public bool? IsActive { get; set; }
 
         [JsonIgnore]
         public virtual Address? Address { get; set; }
